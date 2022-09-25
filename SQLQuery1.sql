@@ -131,7 +131,7 @@ from rfm_calc c
 select CUSTOMERNAME, rfm_recency, rfm_frequency, rfm_Monetory, rfm_string,
 	case 
 		when rfm_string in (111, 112 , 121, 122, 123, 132, 211, 212, 114, 141,232) then 'lost_customers'  --lost customers
-		when rfm_string in (133, 134, 143, 244, 334,144) then 'slipping away, cannot lose' -- (Big spenders who haven’t purchased lately) slipping away
+		when rfm_string in (133, 134, 143, 244, 334,144) then 'slipping away, cannot lose' -- (Big spenders who havenâ€™t purchased lately) slipping away
 		when rfm_string in (311, 411, 331,421,412) then 'new customers'
 		when rfm_string in (222, 223, 233, 322,234,221) then 'potential churners'
 		when rfm_string in (323, 333,321, 422, 332,343, 432,344,423) then 'active' --(Customers who buy often & recently, but at low price points)
@@ -140,10 +140,36 @@ select CUSTOMERNAME, rfm_recency, rfm_frequency, rfm_Monetory, rfm_string,
 from #rfm
 
 --- What products are most often sold together
-select ORDERNUMBER, count(ORDERNUMBER) as rn
+select distinct ordernumber, STUFF(
+	(select ',' + PRODUCTCODE
+	from sales_data_sample p
+	where ORDERNUMBER in 
+		(
+			select ORDERNUMBER
+			from (
+				select ORDERNUMBER, count(ORDERNUMBER) as rn
+				from sales_data_sample
+				where STATUS = 'shipped'
+				group by ORDERNUMBER
+			) as m
+			where rn = 2
+		)
+		and p.ORDERNUMBER  = s.ORDERNUMBER
+		for xml path (''))
+		,1,1,'') as Productcodes
+from sales_data_sample s
+order by 2 desc
+
+---What city has the highest number of sales in a specific country
+select city, sum(sales) as Revenue
 from sales_data_sample
-where STATUS = 'shipped'
-group by ORDERNUMBER
+where COUNTRY = 'UK'
+group by CITY
+order by Revenue desc
 
-select * from sales_data_sample where ORDERNUMBER = 10411
-
+---What is the best product in United States?
+select PRODUCTLINE, sum(sales) Revenue
+from sales_data_sample
+where COUNTRY = 'USA'
+group by PRODUCTLINE
+order by Revenue desc
