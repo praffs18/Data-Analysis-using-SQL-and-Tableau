@@ -139,26 +139,6 @@ select CUSTOMERNAME, rfm_recency, rfm_frequency, rfm_Monetory, rfm_string,
 	end rfm_segment
 from #rfm
 
---- What products are most often sold together
-select distinct ordernumber, STUFF(
-	(select ',' + PRODUCTCODE
-	from sales_data_sample p
-	where ORDERNUMBER in 
-		(
-			select ORDERNUMBER
-			from (
-				select ORDERNUMBER, count(ORDERNUMBER) as rn
-				from sales_data_sample
-				where STATUS = 'shipped'
-				group by ORDERNUMBER
-			) as m
-			where rn = 2
-		)
-		and p.ORDERNUMBER  = s.ORDERNUMBER
-		for xml path (''))
-		,1,1,'') as Productcodes
-from sales_data_sample s
-order by 2 desc
 
 ---What city has the highest number of sales in a specific country
 select city, sum(sales) as Revenue
