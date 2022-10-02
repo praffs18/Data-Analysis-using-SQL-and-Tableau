@@ -23,3 +23,5 @@ Sales transactions from Jan-2003 to May-2005
 2. Tableau : for visualizing the insights
 
 # Glimpse of the Dashboard
+![Screenshot (193)](https://user-images.githubusercontent.com/65829391/193468717-626a2f95-b22d-44d2-8d47-db941016cda3.png)
+![Screenshot (194)](https://user-images.githubusercontent.com/65829391/193468726-8d35c58a-a43b-4ec9-b593-420f87493120.png)
