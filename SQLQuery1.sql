@@ -5,8 +5,6 @@ use PortfolioDB;
 --- Inspecting Data --- 
 select * from [dbo].[sales_data_sample]
 
-select STATUS from sales_data_sample
-group by STATUS
 
 --- Description of quantity orderd column
 select max(QUANTITYORDERED) as maximum_order_qty,
